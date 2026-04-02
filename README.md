@@ -1,6 +1,6 @@
 # IT to Cloud Journey
 
-Hi, I'm currently working in IT Operations / Support and actively transitioning into AWS and cloud engineering.
+Hi, I'm currently working in IT / Support and actively transitioning into AWS and cloud engineering.
 
 This repository documents my progression from hands-on IT support into cloud-focused work through labs, notes, and real-world concepts.
 
