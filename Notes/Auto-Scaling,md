@@ -1,0 +1,33 @@
+# Auto Scaling (ASG)
+
+## Overview
+Auto Scaling automatically adjusts the number of EC2 instances based on demand.
+---
+
+## Key Concepts
+
+### Auto Scaling Group (ASG)
+- Group of EC2 instances
+- Maintains desired number of instances
+
+### Scaling Policies
+
+#### 1. Dynamic Scaling
+- Based on metrics (CPU, traffic)
+
+#### 2. Scheduled Scaling
+- Scale at specific times
+---
+
+## Example
+If CPU > 70%:
+→ Add more instances
+If CPU < 30%:
+→ Remove instances
+---
+
+## Benefits
+- Cost efficiency
+- High availability
+- Automatic scaling
+ 
