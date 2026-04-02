@@ -1,0 +1,125 @@
+# ☁️ AWS Common Questions & Answers
+
+## 1. What is AWS?
+**Answer:**  
+Amazon Web Services (AWS) is a cloud computing platform that provides on-demand services like compute, storage, and databases on a pay-as-you-go basis.
+---
+
+## 2. What are the main cloud service models?
+**Answer:**
+- **IaaS** – Infrastructure as a Service (e.g., EC2)
+- **PaaS** – Platform as a Service (e.g., Elastic Beanstalk)
+- **SaaS** – Software as a Service (e.g., Gmail)
+---
+
+## 3. What is EC2?
+**Answer:**  
+EC2 (Elastic Compute Cloud) provides virtual servers in the cloud.
+---
+
+## 4. What is S3?
+**Answer:**  
+S3 (Simple Storage Service) is an object storage service for storing and retrieving data.
+---
+
+## 5. What is IAM?
+**Answer:**  
+IAM (Identity and Access Management) controls access to AWS services securely.
+---
+
+## 6. What is a Region and Availability Zone?
+**Answer:**
+- **Region:** Geographic location of AWS data centers  
+- **Availability Zone:** Isolated data centers within a region  
+---
+
+## 7. What is Auto Scaling?
+**Answer:**  
+Automatically adjusts the number of EC2 instances based on demand.
+---
+
+## 8. What is Elastic Load Balancing?
+**Answer:**  
+Distributes incoming traffic across multiple servers.
+---
+
+## 9. What is AWS Lambda?
+**Answer:**  
+A serverless service that lets you run code without managing servers.
+---
+
+## 10. What is RDS?
+**Answer:**  
+RDS is a managed relational database service.
+---
+
+## 11. Difference between S3, EBS, and EFS?
+
+| Service | Type | Use Case |
+|--------|------|---------|
+| S3     | Object Storage | Store files |
+| EBS    | Block Storage  | Attach to EC2 |
+| EFS    | File Storage   | Shared file system |
+---
+
+## 12. What is VPC?
+**Answer:**  
+A Virtual Private Cloud lets you create a private network in AWS.
+---
+
+## 13. What is CloudFront?
+**Answer:**  
+A Content Delivery Network (CDN) for fast content delivery.
+---
+
+## 14. What is the Shared Responsibility Model?
+**Answer:**
+- AWS → Security **of** the cloud  
+- User → Security **in** the cloud  
+---
+
+## 15. What is CloudWatch?
+**Answer:**  
+Monitoring service for AWS resources.
+---
+
+## 16. What is Route 53?
+**Answer:**  
+A DNS and domain routing service.
+---
+
+## 17. What is CloudFormation?
+**Answer:**  
+Infrastructure as Code (IaC) service.
+---
+
+## 18. Horizontal vs Vertical Scaling?
+
+| Type | Description |
+|------|------------|
+| Horizontal | Add more machines |
+| Vertical   | Increase machine size |
+---
+
+## 19. What is Elastic Beanstalk?
+**Answer:**  
+A service to deploy and manage applications easily.
+---
+
+## 20. What is a Security Group?
+**Answer:**  
+A virtual firewall controlling traffic for EC2 instances.
+---
+
+# ✅ Study Checklist
+
+- [x] Learn core services (EC2, S3, IAM)
+- [x] Understand pricing basics
+- [ ] Practice mock exams
+- [ ] Build hands-on projects
+---
+
+# 🚀 Notes
+- Focus on **use cases**
+- Expect **scenario-based questions**
+- Practice regularly
