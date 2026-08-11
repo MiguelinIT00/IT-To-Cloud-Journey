@@ -1,0 +1,27 @@
+LocalStack — AWS Local Development
+
+LocalStack allows me to run and test AWS services locally using Docker instead of deploying everything directly into a live AWS environment.
+
+Current Tool Stack
+
+* LocalStack
+* Docker Desktop
+* AWS CLI
+* PowerShell
+* Git / GitHub
+
+What I’m Using It For
+
+* Practicing AWS CLI commands
+* Creating and managing AWS resources locally
+* Testing cloud configurations
+* Troubleshooting AWS environments
+* Learning infrastructure and security concepts
+* Building repeatable cloud labs
+* Documenting my progress and solutions
+
+Current Focus
+
+Moving beyond the AWS console and getting more hands-on experience with the CLI, infrastructure configuration, troubleshooting, and automation.
+
+Goal: Build → Break → Troubleshoot → Fix → Document → Repeat.
