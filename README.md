@@ -1,60 +1,25 @@
-# IT to Cloud Journey
+## ☁️ Where I'm Headed
 
-Hi, I'm currently working in IT / Support and actively transitioning into AWS and cloud engineering.
+My journey is evolving from traditional IT systems and infrastructure into **Cloud & Infrastructure Engineering**.
 
-This repository documents my progression from hands-on IT support into cloud-focused work through labs, notes, and real-world concepts.
+I'm currently building on my hands-on IT experience by going deeper into:
 
-## What I'm Learning
+- ☁️ AWS & Cloud Infrastructure
+- 🌐 Cloud Networking
+- 🔐 Identity & Access Management (IAM)
+- ⚙️ Automation
+- 🏗️ Infrastructure as Code
+- 🧪 Cloud Labs & LocalStack
+- 🤖 AI-Assisted Engineering with OpenAI
 
-- AWS Fundamentals  
+### Current Focus
 
-- Identity & Access Management (IAM)  
+I'm focused on building practical cloud environments, understanding how services connect, automating infrastructure, and developing the skills required to design and support secure, scalable systems.
 
-- EC2 (Compute)  
+This repository will document that progression through hands-on labs, architecture projects, troubleshooting, automation, and real-world cloud scenarios.
 
-- S3 (Storage)  
+### The Goal
 
-- Networking Basics  
+Continue bridging my background in **IT systems, infrastructure, endpoint management, networking, and identity** with modern cloud engineering.
 
-- Cloud Security Fundamentals  
-
-- Automation & Scripting  
-
-## Why I Built This Repo
-
-I created this repository to:
-
-- Track my learning in a structured way  
-
-- Document concepts in my own words  
-
-- Show hands-on progress beyond just certifications  
-
-## Current Focus
-
-- Completing AWS training  
-
-- Building and documenting labs  
-
-- Breaking down real concepts into simple explanations  
-
-- Preparing for AWS certification  
-
-## Repo Structure
-
-- `notes/` → Concept breakdowns and learning notes  
-
-- `labs/` → Hands-on AWS exercises  
-
-- `projects/` → Practical builds and implementations  
-
-## Current Status
-
-Actively building and updating as I continue learning and gaining hands-on experience.
-
-## Background → Direction
-
-My foundation is in real-world IT operations, troubleshooting, and user support.  
-
-This repo represents the next step: applying that experience to cloud infrastructure, security, and scalable systems.
- 
+**Build. Break. Troubleshoot. Understand. Improve.**
