@@ -1,0 +1,29 @@
+## ☁️ AWS Local Cloud Lab — LocalStack
+
+Built a local AWS development environment using **LocalStack** to gain hands-on experience working with AWS services, cloud infrastructure, and troubleshooting without requiring production resources.
+
+### 🔧 Technologies
+- AWS
+- LocalStack
+- AWS CLI
+- Docker
+- IAM
+- Amazon S3
+- AWS Lambda
+- Infrastructure as Code (IaC)
+
+### 🧪 What I'm Working On
+- Creating and managing AWS resources through the AWS CLI
+- Configuring S3 buckets and object storage
+- Testing IAM permissions and access controls
+- Deploying and testing Lambda functions
+- Connecting multiple AWS services together
+- Troubleshooting configuration and connectivity issues
+- Automating infrastructure deployment
+- Testing cloud architectures locally before deploying to AWS
+
+### 🎯 Goal
+
+Build practical AWS infrastructure skills by creating increasingly complex cloud environments, documenting each implementation, and applying real-world troubleshooting practices.
+
+This environment serves as a sandbox for experimenting, breaking things, diagnosing problems, and rebuilding them correctly.
