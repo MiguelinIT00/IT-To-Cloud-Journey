@@ -55,17 +55,6 @@ The design separates public entry points from private compute and data layers. I
 7. Clean up chargeable resources.
 8. Document the result and the decision behind it.
 
-## Interview preparation
-
-Start with the [Cloud Engineering Interview Guide](INTERVIEW-GUIDE.md). It contains:
-
-- a grounded 60-second introduction;
-- an EC2 and VPC request-flow explanation;
-- architecture and troubleshooting walkthroughs;
-- concise answers to common AWS questions;
-- STAR-story prompts that do not overstate the work completed;
-- a final review checklist.
-
 ## Current status
 
 Completed work includes AWS fundamentals, an initial EC2 launch, AWS console exploration, and LocalStack/AWS CLI S3 practice. The deeper labs and architecture documents are study artifacts for the next iteration. Their checklists remain open until each verification step has been performed.
