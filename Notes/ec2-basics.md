@@ -1,146 +1,95 @@
-# EC2 Basics
+# Amazon EC2 Deep Dive
 
-## What is an EC2 Instance?
+## What EC2 provides
 
-An Amazon EC2 instance is basically a virtual server in AWS.
+Amazon Elastic Compute Cloud provides virtual compute instances. EC2 gives control over the operating system and software stack, which also means the customer owns patching, hardening, application configuration, and workload monitoring.
 
-Instead of dealing with physical hardware, you can launch a server in the cloud that you can start, stop, resize, and configure whenever you need it.
+## Decisions in an instance launch
 
-It’s like having a computer that lives in AWS and runs whatever you want.
+### AMI
 
-## What EC2 is Used For
+An Amazon Machine Image supplies the boot volume contents and launch permissions. AMIs can be AWS-provided, Marketplace-based, community-based, or custom. A controlled AMI pipeline helps make hosts repeatable.
 
-Some common things you can do with EC2:
+### Instance type
 
-- Host websites or web apps  
+The type describes a hardware profile: virtual CPU, memory, networking, storage behavior, and possibly accelerators. Families are optimized for general purpose, compute, memory, storage, or accelerated workloads.
 
-- Run backend services  
+Choose using measurements. A CPU alarm alone cannot reveal memory pressure unless memory metrics are collected from the guest OS.
 
-- Test software  
+### Network placement
 
-- Run scripts or automation  
+An instance launches into one subnet in one Availability Zone. Its network interface receives a private address. Public IPv4 reachability additionally requires a public IPv4 address/Elastic IP, correct routing, and traffic allowed by network controls.
 
-- Create cloud lab environments  
+### Security group
 
-## Key Idea
+Security groups are stateful allow-list firewalls associated with network interfaces. Start with no unnecessary inbound rules. Reference another security group when the intended source is another application tier.
 
-EC2 gives you compute power on demand.
+### Storage
 
-You don’t need to buy or maintain hardware. You just spin up a server when you need it.
+- **EBS:** persistent block storage, normally scoped to one AZ and attached like a disk.
+- **Instance store:** temporary storage physically associated with the host; data does not survive all lifecycle events.
+- **S3:** object storage accessed through APIs; not a replacement for a normal boot disk.
+- **EFS:** managed shared file storage mountable by multiple clients.
 
----
+### IAM role
 
-## EC2 in the AWS Ecosystem (Additional Notes)
+Attach a least-privilege role through an instance profile. Applications then receive temporary credentials through the instance metadata service instead of storing access keys on disk.
 
-These notes expand on how EC2 interacts with other core AWS services.
+### Bootstrap and management
 
-EC2 is not just a standalone server. It works together with other AWS services to build a full environment.
+User data can bootstrap a host on launch, but long scripts can become difficult to test and observe. Mature environments combine a trusted image, short bootstrap logic, configuration management, and an immutable or replaceable-instance approach.
 
----
+Prefer Systems Manager Session Manager for administration when possible so inbound SSH/RDP does not have to be exposed.
 
-### EC2 + IAM (Permissions)
+## Lifecycle
 
-IAM controls access and permissions in AWS.
+| Action | Compute billing | Host placement | Private IPv4 | Public IPv4 | EBS data |
+|---|---|---|---|---|---|
+| Reboot | Continues | Normally same host | Preserved | Preserved | Preserved |
+| Stop/start | Stops while fully stopped; other resources can still cost money | May change | Preserved | Usually changes unless Elastic IP | Preserved |
+| Hibernate | RAM state is saved when supported/configured | May change | Preserved | Usually changes unless Elastic IP | Preserved |
+| Terminate | Instance compute billing ends | Instance removed | Released | Released | Depends on `DeleteOnTermination` |
 
-- IAM users or roles control who can manage EC2  
+Always verify volume, snapshot, IP, and dependent-resource behavior before changing lifecycle state.
 
-- EC2 instances can also have an IAM role attached  
+## Purchase options
 
-Why this matters:
+- **On-Demand:** flexible, no long commitment; useful for uncertain or short-lived demand.
+- **Savings Plans:** commitment based; appropriate after understanding steady usage.
+- **Reserved Instances:** billing benefit with attributes and scope that vary by offering.
+- **Spot Instances:** discounted spare capacity that can be interrupted; design the workload to tolerate interruption.
+- **Dedicated Hosts/Instances:** stronger tenancy control for specific compliance or licensing cases at higher cost.
 
-Instead of storing credentials on the server, the EC2 instance can securely access other AWS services using its IAM role.
+## EC2 operational checklist
 
-Example:
+- Use an approved, patched AMI.
+- Require IMDSv2 where compatible.
+- Attach a least-privilege IAM role; do not store access keys.
+- Encrypt EBS volumes with the appropriate KMS key.
+- Limit security-group rules to required sources and ports.
+- Send system/application logs to a durable central location.
+- Collect workload metrics, not only default host metrics.
+- Back up or snapshot state according to RPO.
+- Tag owner, environment, application, data classification, and cost center.
+- Define patching, replacement, recovery, and termination-protection expectations.
 
-An EC2 instance can pull files from S3 without storing access keys.
+## Common failure scenarios
 
----
+### Cannot connect with SSH
 
-### EC2 + S3 (Storage)
+Check instance state and status checks, correct address, route path, public/Elastic IP, security-group source CIDR, NACL rules, host firewall, SSH service, username, and key. Prefer Session Manager when configured.
 
-S3 is used to store files like images, backups, logs, and other data.
+### Website times out
 
-EC2 and S3 usually work together:
+Check DNS, load balancer/target health, route path, security groups, NACLs, process listener, host firewall, application logs, and dependency health.
 
-- EC2 processes or generates data  
+### Instance passes status checks but application fails
 
-- S3 stores that data  
+EC2 status checks do not understand application correctness. Check the process, port, disk/memory pressure, configuration, secrets, downstream services, and application-specific health endpoint.
 
-Examples:
+## Official references
 
-- A web app on EC2 uploads images to S3  
-
-- EC2 reads config files from S3  
-
-- Logs and backups from EC2 are stored in S3  
-
-Simple way to think about it:
-
-- EC2 = compute  
-
-- S3 = storage  
-
----
-
-### EC2 + VPC (Networking)
-
-Every EC2 instance runs inside a VPC (Virtual Private Cloud).
-
-The VPC is basically the network your EC2 lives in.
-
-It controls things like:
-
-- IP addresses  
-
-- Internet access  
-
-- Security rules  
-
-Key parts:
-
-Subnets:
-
-- Public subnet → has internet access  
-
-- Private subnet → no direct internet access  
-
-Security Groups:
-
-- Act like a firewall for EC2  
-
-- Control what traffic is allowed in and out  
-
-Example:
-
-Only allow SSH (port 22) from your IP.
-
----
-
-### How I Think About It
-
-I think of EC2 as the center of everything.
-
-It runs the application, and then:
-
-- IAM controls what it’s allowed to access  
-
-- S3 is where data gets stored or retrieved  
-
-- VPC is the network it lives in  
-
-All of these pieces work together rather than in a strict step-by-step flow.
-
----
-
-## My Understanding
-
-EC2 is the compute layer in AWS, but it becomes powerful when combined with other services.
-
-- IAM handles security and permissions  
-
-- S3 handles storage  
-
-- VPC handles networking  
-
-So instead of thinking of EC2 as just a virtual machine, I see it as part of a bigger system where everything connects together.
- 
+- [EC2 instance lifecycle](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html)
+- [Instance types](https://docs.aws.amazon.com/ec2/latest/instancetypes/instance-types.html)
+- [Security groups](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html)
+- [IAM roles for applications on EC2](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html)

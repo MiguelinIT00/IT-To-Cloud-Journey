@@ -1,116 +1,47 @@
-# Lambda Basics
+# AWS Lambda Fundamentals
 
-## What is AWS Lambda?
+Lambda runs code in response to invocations without the customer managing servers. AWS operates the underlying compute fleet; the customer still owns function code, IAM permissions, configuration, dependencies, data protection, observability, and failure handling.
 
-AWS Lambda is a serverless compute service that allows you to run code without provisioning or managing servers. It executes code automatically in response to events.
+## Execution model
 
----
+- Functions run in execution environments that may be reused but should not be treated as durable state.
+- The handler receives an event and runtime context.
+- Memory configuration also affects available CPU and other resources.
+- Each invocation has a maximum duration; long-running jobs need another compute pattern or decomposition.
+- Scaling is managed, but concurrency, downstream capacity, quotas, and cost still require design.
 
-## Key Concepts
+## Common event sources
 
-- **Serverless**
+- API Gateway or function URLs for HTTP.
+- S3 notifications for object events.
+- EventBridge for events and schedules.
+- SQS for buffered asynchronous processing.
+- DynamoDB Streams or Kinesis for stream records.
 
-  No need to manage infrastructure or servers
+## Reliability patterns
 
-- **Event-Driven**
+- Assume events may be delivered more than once and design idempotent processing.
+- Use retries with bounded backoff and understand the event source's retry behavior.
+- Configure dead-letter or failure destinations where supported and useful.
+- Protect downstream systems with reserved concurrency, queues, and backpressure.
+- Record correlation identifiers and meaningful outcome metrics.
 
-  Runs code based on triggers (events)
+## Security
 
-- **Auto Scaling**
+- Give the execution role only required actions/resources.
+- Store secrets in an appropriate managed service, not in source code.
+- Validate untrusted event input.
+- Keep dependencies patched and deployment artifacts controlled.
+- Use VPC attachment only when the function needs private VPC resources; understand the networking and cold-start/operational implications.
 
-  Automatically scales depending on demand
+## Lambda versus EC2
 
-- **Stateless**
+Choose Lambda for event-driven, short-lived, horizontally scalable work that fits its execution model. Choose EC2 when the workload needs OS control, special agents/drivers, long-running processes, predictable dedicated capacity, or software that does not fit the function model. Containers and managed compute provide additional options.
 
-  Each execution is independent (no memory of previous runs)
+## Planned local project
 
-- **Execution Limit**
+S3 object creation will invoke a Lambda function that writes a derived object and structured log. The lab will test duplicate delivery, invalid input, denied access, and cleanup. Until executed, it remains planned.
 
-  Maximum runtime is 15 minutes per invocation
+## Official reference
 
----
-
-## Common Triggers
-
-- S3 → file uploads
-
-- API Gateway → HTTP requests
-
-- DynamoDB → data changes
-
-- CloudWatch → scheduled jobs
-
----
-
-## How It Works
-
-1. Event occurs (e.g., file uploaded to S3)
-
-2. Lambda function is triggered
-
-3. Code executes
-
-4. Lambda stops after execution completes
-
----
-
-## Use Cases
-
-- Image processing (resize on upload)
-
-- Backend APIs (via API Gateway)
-
-- Automation scripts
-
-- Data processing pipelines
-
----
-
-## Pricing
-
-- Pay only when code runs
-
-- Based on:
-
-  - Execution time (milliseconds)
-
-  - Memory usage
-
-No cost when idle
-
----
-
-## Advantages
-
-- No server management
-
-- Scales automatically
-
-- Cost efficient
-
-- Easy integration with AWS services
-
----
-
-## Limitations
-
-- 15 minute execution limit
-
-- Cold start delay
-
-- Not ideal for long-running workloads
-
-- Limited environment control
-
----
-
-## Related Services
-
-- API Gateway → exposes Lambda as an API
-
-- S3 → triggers Lambda events
-
-- DynamoDB → triggers on data updates
-
-- CloudWatch → logging and scheduling
- 
+- [AWS Lambda Developer Guide](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html)

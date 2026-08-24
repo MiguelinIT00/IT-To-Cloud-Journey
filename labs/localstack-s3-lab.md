@@ -1,59 +1,63 @@
-# 🪣 LocalStack S3 Lab
+# Completed Lab: LocalStack S3 with the AWS CLI
 
 ## Objective
 
-Build and manage an Amazon S3 environment locally using LocalStack and the AWS CLI.
-
-The goal of this lab is to practice interacting with AWS infrastructure from the command line rather than relying exclusively on the AWS Management Console.
+Practice the S3 resource lifecycle from the command line in a local emulated AWS environment.
 
 ## Environment
 
-- LocalStack
-- Docker Desktop
+- LocalStack and Docker Desktop
 - AWS CLI
 - PowerShell
-- Git / GitHub
+- Test-only local credentials
 
-## Tasks
+## Tasks completed
 
-- Start the LocalStack environment
-- Verify connectivity through the AWS CLI
-- Create an S3 bucket
-- List available buckets
-- Upload an object
-- List objects inside the bucket
-- Download the object
-- Delete the object
-- Remove the test bucket
+- Started and verified the LocalStack environment.
+- Created an S3 bucket through the CLI.
+- Listed buckets.
+- Uploaded an object.
+- Listed and downloaded the object.
+- Deleted the object and bucket.
 
-## What I'm Learning
+## Example command pattern
 
-### AWS CLI
-Using CLI commands to create and manage cloud resources.
+These commands use example names and the local endpoint. They are not evidence of a currently running environment.
 
-### S3
-Understanding buckets, objects, storage operations, and resource naming.
+```powershell
+$endpoint = "http://localhost:4566"
+$bucket = "cloud-study-local"
 
-### Local Cloud Development
-Testing AWS workflows locally before working with live cloud infrastructure.
+aws --endpoint-url $endpoint s3api create-bucket --bucket $bucket
+aws --endpoint-url $endpoint s3 ls
+aws --endpoint-url $endpoint s3 cp .\example.txt "s3://$bucket/example.txt"
+aws --endpoint-url $endpoint s3api list-objects-v2 --bucket $bucket
+aws --endpoint-url $endpoint s3 cp "s3://$bucket/example.txt" .\downloaded-example.txt
+aws --endpoint-url $endpoint s3 rm "s3://$bucket/example.txt"
+aws --endpoint-url $endpoint s3api delete-bucket --bucket $bucket
+```
 
-### Troubleshooting
-Diagnosing CLI, Docker, endpoint, and configuration issues when services don't behave as expected.
+## Verification mindset
 
-## Security Focus
+Each mutation should have a read-after step:
 
-As these labs expand, I'm also focusing on:
+- After create: list or describe the bucket.
+- After upload: list/head the object and compare expected content.
+- After delete: verify the object or bucket is absent.
+- On failure: capture the exact caller, endpoint, command, and error.
 
-- IAM permissions
-- Least-privilege access
-- Resource policies
-- Credential management
-- Logging and monitoring
+## What I learned
 
-## Next Step
+- The AWS CLI exposes infrastructure operations directly and makes them repeatable.
+- Endpoint configuration matters; a command pointed at AWS is not the same as a command pointed at LocalStack.
+- Bucket and object operations are separate API concepts.
+- Cleanup and negative tests are part of the lab.
+- Local emulation does not validate all real AWS permissions, durability, availability, or service behavior.
 
-Connect S3 with additional AWS services and begin experimenting with event-driven architecture using Lambda.
+## Next experiment
 
----
-
-**Build → Break → Troubleshoot → Fix → Document → Repeat.**
+- [ ] Configure an S3 event notification.
+- [ ] Trigger a Lambda function in LocalStack.
+- [ ] Make processing idempotent.
+- [ ] Inspect logs and retry behavior.
+- [ ] Define the stack with IaC and recreate it from zero.

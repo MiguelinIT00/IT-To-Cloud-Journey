@@ -1,94 +1,88 @@
-# VPC Basics
+# Amazon VPC Deep Dive
 
-## What is a VPC?
+## Mental model
 
-A VPC (Virtual Private Cloud) is a private network inside AWS where you can launch and manage resources like EC2 instances.
-It gives you control over networking, IP addresses, routing, and security.
+A VPC is a logically isolated network in an AWS Region. A subnet is an Availability Zone-scoped slice of its IP address range. Routing determines the next hop. Security groups and network ACLs filter traffic. DNS and endpoints determine how workloads find and privately reach services.
 
-## Key Idea
-A VPC is the network layer in AWS.
-- EC2 = compute
-- S3 = storage
-- IAM = permissions
-- VPC = networking
+## CIDR planning
 
-## Why VPC Matters
-A VPC helps organize and protect your AWS environment.
-It lets you decide:
-- Which resources can access the internet
-- Which resources stay private
-- How traffic moves between resources
-- What network rules are allowed
+Example learning layout for `10.20.0.0/16`:
 
-## IP Address Range
-When you create a VPC, you assign it a CIDR block.
-A CIDR block is a range of IP addresses the VPC can use.
-Example:
-10.0.0.0/16
-This gives the VPC a private address range for resources inside it.
+| AZ | Public | Private application | Isolated database |
+|---|---|---|---|
+| A | `10.20.0.0/24` | `10.20.10.0/24` | `10.20.20.0/24` |
+| B | `10.20.1.0/24` | `10.20.11.0/24` | `10.20.21.0/24` |
 
-## Subnets
-A subnet is a smaller section of a VPC.
-Resources like EC2 instances are launched into a subnet.
-There are two common types:
-- Public subnet
-- Private subnet
-A public subnet can allow access to the internet.
-A private subnet is usually used for resources that should not be directly accessible from the internet.
+Leave room for growth and avoid overlapping ranges if VPCs, on-premises networks, or partner networks may later connect.
 
-## Route Tables
-A route table controls where network traffic is directed.
-It tells resources inside the subnet where to send traffic.
-Example:
-A route table can send internet-bound traffic to an internet gateway.
+## What makes a subnet public or private
 
-## Internet Gateway
-An internet gateway allows communication between a VPC and the internet.
-If a subnet is meant to be public, it usually needs:
-- A route to the internet gateway
-- Resources with public IP addresses
+- A **public subnet** has a route to an internet gateway. An IPv4 resource still needs a public IPv4/Elastic IP, or a public-facing intermediary, to communicate directly through it.
+- A **private subnet** has no route directly to an internet gateway.
+- A private IPv4 workload can initiate internet traffic through a NAT gateway placed in a public subnet.
+- An **isolated subnet** has no general internet route; it can still use explicitly configured private routes and endpoints.
 
-## Security Groups
-A security group acts like a virtual firewall for a resource such as an EC2 instance.
-It controls inbound and outbound traffic.
-Example:
-- Allow SSH on port 22 from your IP
-- Allow HTTP on port 80
-- Allow HTTPS on port 443
+Naming a subnet `public` does not change its routing.
 
-## Network ACLs
-A Network ACL (Access Control List) is another layer of security for subnets.
-It controls traffic entering and leaving the subnet.
-Security groups apply at the resource level.
-Network ACLs apply at the subnet level.
+## Route evaluation
 
-## VPC and EC2
-EC2 instances run inside a VPC.
-The VPC decides:
-- What subnet the EC2 instance is in
-- Whether it has internet access
-- What traffic is allowed to reach it
+Each route has a destination and target. AWS chooses the most specific matching route. Common targets include:
 
-## VPC and S3
-S3 does not live inside your VPC, but it can still connect securely.
-A VPC endpoint can allow private access from your VPC to S3 without sending traffic over the public internet.
+- `local` for traffic inside the VPC CIDR;
+- internet gateway for direct internet routing;
+- NAT gateway for private IPv4 egress;
+- gateway or interface VPC endpoint for private service access;
+- VPC peering or Transit Gateway for connected networks;
+- virtual private gateway for some VPN designs.
 
-## How I Think About It
-I think of a VPC as the environment that holds everything together on the network side.
-- EC2 lives inside it
-- Subnets divide it up
-- Route tables decide where traffic goes
-- Security groups and ACLs help protect it
-It is basically the network foundation for AWS resources.
+## Internet gateway versus NAT gateway
 
-## My Understanding
-A VPC gives structure and security to AWS networking.
-Instead of just launching resources into the cloud, a VPC lets you control how those resources communicate and whether they stay public or private.
-It is one of the main building blocks of a secure AWS setup.
+| Internet gateway | NAT gateway |
+|---|---|
+| Attached to the VPC | Created in a subnet |
+| Target for public subnet routes | Target for private subnet IPv4 egress routes |
+| Supports direct inbound/outbound for publicly addressed resources when controls allow | Supports connections initiated by private resources; not unsolicited inbound access |
+| No hourly gateway charge, though transfer charges can apply | Hourly and data-processing charges apply |
 
-## Future Topics
-- NAT Gateway
-- VPC endpoints
-- Peering
-- DNS in a VPC
-- Public vs private architecture
+For resilient zonal design, consider one NAT gateway per AZ and route each private subnet to the NAT gateway in the same AZ. This costs more than one shared NAT gateway. VPC endpoints may reduce exposure and NAT processing for supported services.
+
+## Security groups and NACLs
+
+Security groups are stateful and apply to network interfaces. Network ACLs are stateless, apply to subnets, have numbered allow/deny rules, and require return traffic to be allowed explicitly.
+
+Example tiered security groups:
+
+- ALB SG: inbound TCP 443 from intended clients; outbound app port to application SG.
+- Application SG: inbound app port from ALB SG; outbound database port to database SG and required service destinations.
+- Database SG: inbound database port from application SG only.
+
+Avoid using broad CIDRs where a security-group reference expresses the trust relationship more precisely.
+
+## DNS
+
+VPC DNS settings affect whether resources receive and resolve AWS-provided hostnames. Route 53 Resolver handles DNS for VPC workloads and can connect to on-premises DNS using inbound/outbound Resolver endpoints.
+
+## Private access to AWS services
+
+- **Gateway endpoints** support services such as S3 and DynamoDB and are used through route tables.
+- **Interface endpoints** create elastic network interfaces powered by AWS PrivateLink and are protected with security groups.
+
+Endpoint policies and service resource policies can further limit access. An endpoint is not a replacement for IAM authorization.
+
+## Packet troubleshooting checklist
+
+1. Identify source IP/SG, destination IP/SG, protocol, and port.
+2. Confirm name resolution returns the intended destination.
+3. Confirm source and destination routes, including a return path.
+4. Check security groups on each relevant network interface.
+5. Check NACL inbound and outbound rules, including ephemeral ports.
+6. Confirm the process is listening and the host firewall allows traffic.
+7. Use VPC Flow Logs and service logs to test the hypothesis.
+8. Check Transit Gateway, peering, VPN, endpoint policy, or DNS when relevant.
+
+## Official references
+
+- [VPC route tables](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html)
+- [Internet gateways](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html)
+- [NAT gateways](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html)
+- [VPC endpoints](https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html)
