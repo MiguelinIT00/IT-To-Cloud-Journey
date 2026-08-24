@@ -1,6 +1,14 @@
 # IT to Cloud Engineering Journey
 
-This repository documents my transition from enterprise IT systems and infrastructure into cloud engineering. I am building on experience with endpoints, identity, networking, and troubleshooting while learning how to design, secure, operate, and automate AWS workloads.
+[LinkedIn](https://www.linkedin.com/in/miguel-martinez-141375336/) · [GitHub Profile](https://github.com/MiguelinIT00)
+
+## About me
+
+I'm Miguel Martinez, an IT support and infrastructure professional developing toward cloud engineering. My background includes supporting Microsoft 365, Active Directory, Google Workspace, Windows and macOS endpoints, Addigy mobile-device management, onboarding and offboarding, SaaS access, asset workflows, and day-to-day user troubleshooting.
+
+That experience shaped how I approach cloud systems: identity must be intentional, network paths should be explainable, changes need verification, and good documentation is part of the solution. I am now applying those habits to AWS while building deeper skills in compute, networking, security, automation, observability, and Infrastructure as Code.
+
+This repository is the working record of that development. It is not a collection of copied definitions or claims about production systems I have not operated. It shows what I have completed, what I have designed as a study exercise, what I can explain, and what I plan to validate next.
 
 The material is deliberately evidence-based:
 
@@ -54,6 +62,28 @@ The design separates public entry points from private compute and data layers. I
 6. Troubleshoot from the outside in: DNS, routing, firewall rules, listener, target, process, dependency.
 7. Clean up chargeable resources.
 8. Document the result and the decision behind it.
+
+## How this project has developed
+
+### 1. Building the foundation
+
+I started by documenting the purpose of core services such as EC2, S3, IAM, VPC, load balancing, Auto Scaling, and Lambda. The first goal was to understand the responsibility of each service instead of memorizing product names.
+
+### 2. Connecting the services
+
+The notes then moved from isolated definitions to system relationships: an EC2 instance runs inside a VPC, receives permissions through an IAM role, stores durable objects in S3, publishes operational signals, and can sit behind a load balancer as part of an Auto Scaling group.
+
+### 3. Practicing through the console and CLI
+
+I completed an initial EC2 launch and built a local AWS-style environment with Docker, LocalStack, and the AWS CLI. The S3 lab practices a full resource lifecycle—create, verify, upload, retrieve, delete, and confirm cleanup—without presenting local emulation as production AWS experience.
+
+### 4. Thinking like an operator
+
+The project now includes packet-flow analysis, least-privilege tests, failure scenarios, health checks, monitoring, audit visibility, backup thinking, RTO/RPO, and structured troubleshooting. The focus is not only “can I create it?” but also “can I secure it, observe it, diagnose it, recover it, and remove it safely?”
+
+### 5. Moving toward repeatable engineering
+
+The current stage adds architecture exercises and a CloudFormation study template so infrastructure decisions can be reviewed, versioned, validated, and reproduced. Planned work will turn the open study labs into completed evidence with sanitized commands, expected versus actual results, failure tests, and cleanup records.
 
 ## Current status
 
